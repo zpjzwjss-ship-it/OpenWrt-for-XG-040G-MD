@@ -63,7 +63,15 @@ jobs:
 
       - name: Clone OpenWrt source code and apply XG-040G-MD patch files
         run: |
-          git clone --depth 1 --branch "$REPO_BRANCH" "$REPO_URL" openwrt
+          # Retry clone up to 5 times (network flakiness)
+          for i in 1 2 3 4 5; do
+            echo "[Attempt $i/5] Cloning $REPO_URL ..."
+            git clone --depth 1 --branch "$REPO_BRANCH" "$REPO_URL" openwrt 2>&1 && break
+            echo "[Attempt $i] failed, waiting ${i}0s..."
+            sleep ${i}0
+            rm -rf openwrt 2>/dev/null
+          done
+          [ -d openwrt/.git ] || { echo "FATAL: Clone failed after 5 attempts"; exit 1; }
           cd patch
           [ -e 01_leds ] && cp -f 01_leds ../openwrt/target/linux/airoha/an7581/base-files/etc/board.d/01_leds
           [ -e 02_network ] && cp -f 02_network ../openwrt/target/linux/airoha/an7581/base-files/etc/board.d/02_network
