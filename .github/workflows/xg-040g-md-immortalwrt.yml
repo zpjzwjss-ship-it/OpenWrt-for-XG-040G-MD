@@ -74,20 +74,19 @@ jobs:
           echo "=== LS ===" && ls -lah && ls -lah openwrt
           echo "=== CD PATCH ==="
           cd patch
-          [ -e 01_leds ] && cp -f 01_leds ../openwrt/target/linux/airoha/an7581/base-files/etc/board.d/01_leds
-          [ -e 02_network ] && cp -f 02_network ../openwrt/target/linux/airoha/an7581/base-files/etc/board.d/02_network
-          [ -e an7581.mk ] && cp -f an7581.mk ../openwrt/target/linux/airoha/image/an7581.mk
-          [ -e an7581-nokia_xg-040g-md.dts ] && cp -f an7581-nokia_xg-040g-md.dts ../openwrt/target/linux/airoha/dts/an7581-nokia_xg-040g-md.dts
-          [ -e 901-snand-mtk-bmt-support.patch ] && cp -f 901-snand-mtk-bmt-support.patch ../openwrt/target/linux/airoha/patches-6.12/901-snand-mtk-bmt-support.patch
-          [ -e 498-mtd-spinand-Skyhigh-robust.patch ] && cp -f 498-mtd-spinand-Skyhigh-robust.patch ../openwrt/target/linux/generic/pending-6.12/498-mtd-spinand-Skyhigh-robust.patch
-          [ -e 499-mtd-spinand-FudanMicro-FM25G02B.patch ] && cp -f 499-mtd-spinand-FudanMicro-FM25G02B.patch ../openwrt/target/linux/generic/pending-6.12/499-mtd-spinand-FudanMicro-FM25G02B.patch
-          [ -e 121-hack-spi-nand-1b-bbm.patch ] && cp -f 121-hack-spi-nand-1b-bbm.patch ../openwrt/target/linux/mediatek/patches-6.12/121-hack-spi-nand-1b-bbm.patch
-          [ -e 330-snand-mtk-bmt-support.patch ] && cp -f 330-snand-mtk-bmt-support.patch ../openwrt/target/linux/mediatek/patches-6.12/330-snand-mtk-bmt-support.patch
-          [ -e 340-mtd-spinand-Add-support-for-the-Fidelix-FM35X1GA.patch ] && cp -f 340-mtd-spinand-Add-support-for-the-Fidelix-FM35X1GA.patch ../openwrt/target/linux/mediatek/patches-6.12/340-mtd-spinand-Add-support-for-the-Fidelix-FM35X1GA.patch
-          [ -e 435-drivers-mtd-spinand-Add-calibration-support-for-spin.patch ] && cp -f 435-drivers-mtd-spinand-Add-calibration-support-for-spin.patch ../openwrt/target/linux/mediatek/patches-6.12/435-drivers-mtd-spinand-Add-calibration-support-for-spin.patch
-          [ -e 436-drivers-mtd-spi-nor-Add-calibration-support-for-spi-.patch ] && cp -f 436-drivers-mtd-spi-nor-Add-calibration-support-for-spi-.patch ../openwrt/target/linux/mediatek/patches-6.12/436-drivers-mtd-spi-nor-Add-calibration-support-for-spi-.patch
-          [ -e 960-asus-hack-u-boot-ignore-mtdparts.patch ] && cp -f 960-asus-hack-u-boot-ignore-mtdparts.patch ../openwrt/target/linux/mediatek/patches-6.12/960-asus-hack-u-boot-ignore-mtdparts.patch
-          #[ -e config-6.12 ] && cp -f config-6.12 ../openwrt/target/linux/airoha/an7581/config-6.12
+          # Core device files (in airoha/ subdirectory)
+          [ -e airoha/01_leds ] && cp -f airoha/01_leds ../openwrt/target/linux/airoha/an7581/base-files/etc/board.d/01_leds
+          [ -e airoha/02_network ] && cp -f airoha/02_network ../openwrt/target/linux/airoha/an7581/base-files/etc/board.d/02_network
+          [ -e airoha/an7581.mk ] && cp -f airoha/an7581.mk ../openwrt/target/linux/airoha/image/an7581.mk
+          [ -e airoha/an7581-nokia_xg-040g-md.dts ] && cp -f airoha/an7581-nokia_xg-040g-md.dts ../openwrt/target/linux/airoha/dts/an7581-nokia_xg-040g-md.dts
+          # Flash support (flat patch/)
+          [ -e 342-mtd-spinand-Support-fmsh.patch ] && cp -f 342-mtd-spinand-Support-fmsh.patch ../openwrt/target/linux/generic/hack-6.12/342-mtd-spinand-Support-fmsh.patch
+          # Generic patches (6.18 source → 6.12 target)
+          [ -e generic/pending-6.18/498-mtd-spinand-Skyhigh-robust.patch ] && cp -f generic/pending-6.18/498-mtd-spinand-Skyhigh-robust.patch ../openwrt/target/linux/generic/pending-6.12/498-mtd-spinand-Skyhigh-robust.patch
+          [ -e generic/pending-6.18/499-mtd-spinand-FudanMicro-FM25G02B.patch ] && cp -f generic/pending-6.18/499-mtd-spinand-FudanMicro-FM25G02B.patch ../openwrt/target/linux/generic/pending-6.12/499-mtd-spinand-FudanMicro-FM25G02B.patch
+          [ -e generic/hack-6.18/400-mtd-spinand-Support-fmsh.patch ] && cp -f generic/hack-6.18/400-mtd-spinand-Support-fmsh.patch ../openwrt/target/linux/generic/hack-6.12/400-mtd-spinand-Support-fmsh.patch
+          # Guard: prevent set -e from killing the job on absent optional patches
+          true
 
       - name: Update & Install feeds
         working-directory: ./openwrt
