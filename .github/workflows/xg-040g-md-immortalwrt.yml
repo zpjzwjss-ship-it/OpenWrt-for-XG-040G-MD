@@ -132,6 +132,9 @@ jobs:
       - name: Copy configuration and defconfig
         run: |
           cp -fv "${CONFIG_FILE}" openwrt/.config
+          # ImmortalWrt 25.12 uses kernel 6.12; strip 6.18 and force 6.12
+          sed -i '/CONFIG_LINUX_6_18/d' openwrt/.config
+          echo "CONFIG_LINUX_6_12=y" >> openwrt/.config
           cd openwrt && make defconfig
           [ -e .config ] && cp .config defconfig-final.config
 
